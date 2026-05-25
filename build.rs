@@ -15,7 +15,8 @@ fn main() {
     // maintainer / CI). When the crate is consumed from crates.io the source
     // tree is read-only, so we must not write into it — instead, fall back to
     // the committed `assets/Fixed*.xsd` snapshots.
-    let in_dev_checkout = Path::new(".git").exists() && Path::new("dawproject/MetaData.xsd").exists();
+    let in_dev_checkout =
+        Path::new(".git").exists() && Path::new("dawproject/MetaData.xsd").exists();
 
     if std::env::var("DOCS_RS").is_err() && in_dev_checkout {
         // Best-effort submodule sync; ignore failure so offline dev builds

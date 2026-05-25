@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.10.2](https://github.com/hifa-lang/dawproject/compare/0.10.1...0.10.2)
+
+### Fixed
+
+- `build.rs` no longer writes into the crate source tree. Generated Rust code
+  is emitted to `OUT_DIR`, and the `assets/Fixed*.xsd` snapshots are only
+  refreshed from the upstream submodule in a dev checkout. This unblocks
+  builds in read-only environments such as the `~/.cargo/registry` cache,
+  sandboxes, and CI with frozen sources.
+- Stale `src/generated/*.rs` files are removed from the package; the modules
+  now `include!` from `OUT_DIR`.
+
+### Changed
+
+- `Cargo.toml` excludes the `dawproject/` submodule from the published
+  tarball.
+- Bumped `quick-xml` from 0.39.2 to 0.40.1.
+- Bumped `actions/checkout` from v4 to v6 in CI / publish / security
+  workflows.
+
 ## [0.10.0](https://github.com/hifa-lang/dawproject/compare/0.9.0...0.10.0)
 
 ### Breaking Changes

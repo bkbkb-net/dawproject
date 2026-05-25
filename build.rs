@@ -1,22 +1,30 @@
+use std::env;
 use std::fs;
 use std::io::Write;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use xsd_parser::config::{GeneratorFlags, InterpreterFlags, OptimizerFlags, Schema};
 use xsd_parser::{generate, Config};
 
 fn main() {
-    let gen_dir = Path::new("src/generated");
+    let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
 
-    if std::env::var("DOCS_RS").is_err() {
-        Command::new("git")
+    // The upstream DAWproject XSDs are vendored as a git submodule. They are
+    // only refreshed when building from a git checkout (i.e. for the
+    // maintainer / CI). When the crate is consumed from crates.io the source
+    // tree is read-only, so we must not write into it — instead, fall back to
+    // the committed `assets/Fixed*.xsd` snapshots.
+    let in_dev_checkout = Path::new(".git").exists() && Path::new("dawproject/MetaData.xsd").exists();
+
+    if std::env::var("DOCS_RS").is_err() && in_dev_checkout {
+        // Best-effort submodule sync; ignore failure so offline dev builds
+        // still proceed against whatever is already on disk.
+        let _ = Command::new("git")
             .args(["submodule", "update", "--init", "--recursive"])
-            .output()
-            .expect("Sync submodules failed!");
+            .status();
 
-        // MetaData.xsd
-        let fixed_metadata_xsd: String = fs::read_to_string("dawproject/MetaData.xsd").unwrap();
+        let metadata_xsd: String = fs::read_to_string("dawproject/MetaData.xsd").unwrap();
 
         // Project.xsd — fix contentType → contentTypes for XSD parsing
         let project_xsd: String = fs::read_to_string("dawproject/Project.xsd").unwrap();
@@ -30,26 +38,41 @@ fn main() {
             .replace("\"eqBandType\"", "\"eqBandKind\"")
             .replace("\"sendType\"", "\"sendKind\"");
 
-        fs::write("assets/FixedMetaData.xsd", &fixed_metadata_xsd).unwrap();
-        fs::write("assets/FixedProject.xsd", &fixed_project_xsd).unwrap();
+        write_if_changed(Path::new("assets/FixedMetaData.xsd"), &metadata_xsd);
+        write_if_changed(Path::new("assets/FixedProject.xsd"), &fixed_project_xsd);
     }
 
-    // Generate metadata types
+    // Generate metadata types into OUT_DIR (never into the source tree).
     generate_from_xsd(
         "assets/FixedMetaData.xsd",
-        &gen_dir.join("metadata_generated.rs"),
+        &out_dir.join("metadata_generated.rs"),
     );
 
-    // Generate project types
+    // Generate project types into OUT_DIR.
     generate_from_xsd(
         "assets/FixedProject.xsd",
-        &gen_dir.join("project_generated.rs"),
+        &out_dir.join("project_generated.rs"),
     );
 
     println!("cargo:rerun-if-changed=assets/FixedMetaData.xsd");
     println!("cargo:rerun-if-changed=assets/FixedProject.xsd");
     println!("cargo:rerun-if-changed=dawproject/MetaData.xsd");
     println!("cargo:rerun-if-changed=dawproject/Project.xsd");
+    println!("cargo:rerun-if-changed=build.rs");
+}
+
+/// Write `content` to `path` only when it differs from the existing file.
+/// Avoids touching read-only checkouts and unnecessary rebuild churn.
+fn write_if_changed(path: &Path, content: &str) {
+    if let Ok(existing) = fs::read_to_string(path) {
+        if existing == content {
+            return;
+        }
+    }
+    if let Some(parent) = path.parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    fs::write(path, content).expect("failed to write XSD snapshot");
 }
 
 fn generate_from_xsd(xsd_path: &str, output_path: &Path) {

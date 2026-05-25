@@ -7,7 +7,7 @@
 )]
 #[rustfmt::skip]
 mod generated {
-    include!("../generated/metadata_generated.rs");
+    include!(concat!(env!("OUT_DIR"), "/metadata_generated.rs"));
 }
 
 pub use generated::MetaDataType as MetaData;

@@ -1,17 +1,18 @@
 [package]
 name = "dawproject"
-version = "0.10.1"
+version = "0.10.2"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/bkbkb-net/dawproject.git"
 documentation = "https://docs.rs/dawproject/"
 description = "A port of DAWproject in Rust."
 readme = "README.md"
 edition = "2021"
+exclude = ["dawproject"]
 
 [dependencies]
 thiserror = "2.0.18"
 serde = { version = "1.0.228", features = ["derive"] }
-quick-xml = { version = "0.39.2", features = ["serialize"] }
+quick-xml = { version = "0.40.1", features = ["serialize"] }
 num = "0.4.3"
 zip = { version = "8.6.0", features = ["deflate"], default-features = false }
 

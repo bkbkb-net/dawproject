@@ -12,7 +12,7 @@ exclude = ["dawproject"]
 [dependencies]
 thiserror = "2.0.18"
 serde = { version = "1.0.228", features = ["derive"] }
-quick-xml = { version = "0.40.1", features = ["serialize"] }
+quick-xml = { version = "0.41.0", features = ["serialize"] }
 num = "0.4.3"
 zip = { version = "8.6.0", features = ["deflate"], default-features = false }
 

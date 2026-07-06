@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.3](https://github.com/hifa-lang/dawproject/compare/0.10.2...0.10.3)
+
+### Changed
+
+- Bumped `quick-xml` from 0.40.1 to 0.41.0. This is the runtime XML
+  serialization dependency; 0.41.0 adds namespace-resolver configuration
+  and attribute-parsing performance work with no serde-facing breaking
+  changes, so the generated serde attributes remain valid.
+
 ## [0.10.2](https://github.com/hifa-lang/dawproject/compare/0.10.1...0.10.2)
 
 ### Fixed

@@ -15,15 +15,14 @@ pub use read::{DawprojectReadError, DawprojectReader};
 /// Metadata of the `metadata.xml` file.
 pub use repositories::metadata::MetaData;
 /// Project of the `project.xml` file.
-pub use repositories::project::ProjectType as Project;
+pub use repositories::project::Project;
 
 // Re-export generated types for direct access
 pub use repositories::project::{
-    ApplicationType,
-    TrackType,
-    ChannelType,
-    ClipType,
-    ClipsType,
+    Track,
+    Channel,
+    Clip,
+    Clips,
     TransportType,
     ProjectStructureElementType,
     ProjectStructureElementTypeContent,

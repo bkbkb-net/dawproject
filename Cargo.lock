@@ -89,7 +89,7 @@ dependencies = [
 
 [[package]]
 name = "dawproject"
-version = "0.10.3"
+version = "0.10.4"
 dependencies = [
  "num",
  "quick-xml 0.41.0",

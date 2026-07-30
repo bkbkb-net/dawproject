@@ -17,15 +17,6 @@ pub use repositories::metadata::MetaData;
 /// Project of the `project.xml` file.
 pub use repositories::project::Project;
 
-// Re-export generated types for direct access
-pub use repositories::project::{
-    Track,
-    Channel,
-    Clip,
-    Clips,
-    TransportType,
-    ProjectStructureElementType,
-    ProjectStructureElementTypeContent,
-    ProjectScenesElementType,
-};
+// Re-export all generated types for direct access
+pub use repositories::project::*;
 pub use write::{DawprojectWriteError, DawprojectWriter};

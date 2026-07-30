@@ -7,5 +7,18 @@ pub use crate::read::{DawprojectReadError, DawprojectReader};
 pub use crate::repositories::metadata::MetaData;
 /// Project of the `project.xml` file.
 pub use crate::repositories::project::ProjectType as Project;
-pub use crate::repositories::*;
+
+// Re-export generated types for direct access
+pub use crate::repositories::project::{
+    ApplicationType,
+    TrackType,
+    ChannelType,
+    ClipType,
+    ClipsType,
+    TransportType,
+    ProjectStructureElementType,
+    ProjectStructureElementTypeContent,
+    ProjectScenesElementType,
+};
+
 pub use crate::write::{DawprojectWriteError, DawprojectWriter};

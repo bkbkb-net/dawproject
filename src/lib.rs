@@ -3,7 +3,7 @@
 mod models;
 pub mod prelude;
 mod read;
-mod repositories;
+pub mod repositories;
 pub mod utils;
 mod write;
 
@@ -16,5 +16,17 @@ pub use read::{DawprojectReadError, DawprojectReader};
 pub use repositories::metadata::MetaData;
 /// Project of the `project.xml` file.
 pub use repositories::project::ProjectType as Project;
-pub use repositories::*;
+
+// Re-export generated types for direct access
+pub use repositories::project::{
+    ApplicationType,
+    TrackType,
+    ChannelType,
+    ClipType,
+    ClipsType,
+    TransportType,
+    ProjectStructureElementType,
+    ProjectStructureElementTypeContent,
+    ProjectScenesElementType,
+};
 pub use write::{DawprojectWriteError, DawprojectWriter};

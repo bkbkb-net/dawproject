@@ -7,7 +7,7 @@
 )]
 #[rustfmt::skip]
 mod generated {
-    include!(concat!(env!("OUT_DIR"), "/project_generated.rs"));
+    include!("../generated/project.rs");
 }
 
 pub use generated::*;

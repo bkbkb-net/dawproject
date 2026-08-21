@@ -6,6 +6,7 @@ mod read;
 pub mod repositories;
 pub mod utils;
 mod write;
+pub mod xml_types;
 
 pub use zip;
 

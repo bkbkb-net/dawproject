@@ -1,3 +1,6 @@
 [submodule "dawproject"]
 	path = dawproject
 	url = https://github.com/bitwig/dawproject.git
+[submodule "tools/xsd-parser"]
+	path = tools/xsd-parser
+	url = https://github.com/Bergmann89/xsd-parser.git

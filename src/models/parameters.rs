@@ -82,31 +82,21 @@ impl RealParameterType {
     /// return false if value is not changed
     /// return error if value is out of range
     pub fn set_value(&mut self, value: f64) -> Result<bool, ParameterError> {
-        match self.get_max() {
-            Ok(max) => {
-                if let Some(max) = max {
-                    if value > max {
-                        return Err(ParameterError::SetMaxError(
-                            value.to_string(),
-                            max.to_string(),
-                        ));
-                    }
-                }
+        if let Some(max) = self.get_max()? {
+            if value > max {
+                return Err(ParameterError::SetMaxError(
+                    value.to_string(),
+                    max.to_string(),
+                ));
             }
-            Err(e) => return Err(e),
         }
-        match self.get_min() {
-            Ok(min) => {
-                if let Some(min) = min {
-                    if value < min {
-                        return Err(ParameterError::SetMinError(
-                            value.to_string(),
-                            min.to_string(),
-                        ));
-                    }
-                }
+        if let Some(min) = self.get_min()? {
+            if value < min {
+                return Err(ParameterError::SetMinError(
+                    value.to_string(),
+                    min.to_string(),
+                ));
             }
-            Err(e) => return Err(e),
         }
 
         if self.get_value()? != Some(value) {

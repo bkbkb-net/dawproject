@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.97.1
 
       - name: Cache cargo artifacts
         uses: Swatinem/rust-cache@v2
@@ -27,3 +27,6 @@ jobs:
 
       - name: Run cargo audit
         run: cargo audit
+
+      - name: Audit code generator dependencies
+        run: cargo audit --file tools/codegen/Cargo.lock

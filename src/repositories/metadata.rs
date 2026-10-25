@@ -10,4 +10,6 @@ mod generated {
     include!("../generated/metadata.rs");
 }
 
+pub use generated::MetaDataType;
+/// Preferred name for [`MetaDataType`], mirroring `project::{Project, ProjectType}`.
 pub use generated::MetaDataType as MetaData;

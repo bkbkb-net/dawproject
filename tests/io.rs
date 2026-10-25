@@ -30,9 +30,10 @@ fn io_canon_dawproject() {
     let mut copied = ZipArchive::new(File::open(COPIED_CANON_DAWPROJECT_PATH).unwrap()).unwrap();
     for i in 0..original.len() {
         let mut original_file = original.by_index(i).unwrap();
-        let mut copied_file = copied.by_name(original_file.name()).unwrap();
-        assert_eq!(original_file.name(), copied_file.name());
-        if matches!(original_file.name(), "metadata.xml" | "project.xml") {
+        let name = original_file.name().unwrap().into_owned();
+        let mut copied_file = copied.by_name(&name).unwrap();
+        assert_eq!(name, copied_file.name().unwrap());
+        if matches!(name.as_str(), "metadata.xml" | "project.xml") {
             continue;
         }
         let mut original_buf = Vec::new();

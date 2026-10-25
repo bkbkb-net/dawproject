@@ -1,3 +1,4 @@
+use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::fs;
 use std::io::Write;
@@ -7,7 +8,7 @@ use std::process::{Command, Stdio};
 use xsd_parser::config::{GeneratorFlags, InterpreterFlags, OptimizerFlags, Schema};
 use xsd_parser::{generate, Config};
 
-const XSD_PARSER_REV: &str = "bf1323fca2d7c95de4c79fbae65a3183ae0d158a";
+const XSD_PARSER_REV: &str = "96299a06eb207b420c3ce03b6d07c41421f555b0";
 const DAWPROJECT_REV: &str = "ee4dcdde75940f30e14e55401a26955a58b8322b";
 
 fn main() {
@@ -180,7 +181,79 @@ fn post_process(code: &str) -> String {
         "generated code still references xsd-parser-types; update the code generator post-processing"
     );
 
-    add_skip_serializing_if(&code)
+    add_skip_serializing_if(&rename_shared_content_types(&code))
+}
+
+/// Gives shared anonymous content types a stable name.
+///
+/// When several complex types have identical anonymous content (DAWproject's
+/// `clip`, `lanes`, `note` and `scene` all allow the same choice of timeline
+/// elements), xsd-parser generates one enum for all of them and names it after
+/// the first owner plus a counter, e.g. `ClipContent55Type`. The counter follows
+/// the schema's declaration order, so the public name would change whenever the
+/// schema gains a type. Use the name xsd-parser gives the content type of a
+/// single owner instead (`ClipTypeContent`).
+fn rename_shared_content_types(code: &str) -> String {
+    let mut renames = BTreeMap::new();
+    for ident in idents(code) {
+        if let Some(owner) = shared_content_owner(ident) {
+            renames
+                .entry(ident)
+                .or_insert_with(|| format!("{owner}TypeContent"));
+        }
+    }
+
+    let existing: BTreeSet<&str> = idents(code).collect();
+    for (from, to) in &renames {
+        assert!(
+            !existing.contains(to.as_str()),
+            "cannot rename shared content type `{from}`: `{to}` already exists"
+        );
+    }
+    let targets: BTreeSet<&String> = renames.values().collect();
+    assert_eq!(
+        targets.len(),
+        renames.len(),
+        "several shared content types of one owner would get the same name: {renames:?}"
+    );
+
+    let mut result = String::with_capacity(code.len());
+    let mut remaining = code;
+    while let Some(start) = remaining.find(is_ident_char) {
+        result.push_str(&remaining[..start]);
+        let after_start = &remaining[start..];
+        let end = after_start
+            .find(|c: char| !is_ident_char(c))
+            .unwrap_or(after_start.len());
+        let ident = &after_start[..end];
+        result.push_str(renames.get(ident).map_or(ident, String::as_str));
+        remaining = &after_start[end..];
+    }
+
+    result.push_str(remaining);
+    result
+}
+
+/// `ClipContent55Type` -> `Clip`.
+fn shared_content_owner(ident: &str) -> Option<&str> {
+    let numbered = ident.strip_suffix("Type")?;
+    let unnumbered = numbered.trim_end_matches(|c: char| c.is_ascii_digit());
+    if unnumbered.len() == numbered.len() {
+        return None;
+    }
+
+    unnumbered
+        .strip_suffix("Content")
+        .filter(|owner| !owner.is_empty())
+}
+
+fn idents(code: &str) -> impl Iterator<Item = &str> {
+    code.split(|c: char| !is_ident_char(c))
+        .filter(|ident| !ident.is_empty())
+}
+
+fn is_ident_char(c: char) -> bool {
+    c.is_alphanumeric() || c == '_'
 }
 
 fn add_skip_serializing_if(code: &str) -> String {

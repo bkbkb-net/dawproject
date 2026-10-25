@@ -1,4 +1,4 @@
-// @generated from DAWproject ee4dcdde75940f30e14e55401a26955a58b8322b with xsd-parser bf1323fca2d7c95de4c79fbae65a3183ae0d158a.
+// @generated from DAWproject ee4dcdde75940f30e14e55401a26955a58b8322b with xsd-parser 96299a06eb207b420c3ce03b6d07c41421f555b0.
 // Do not edit manually; run `cargo run --manifest-path tools/codegen/Cargo.toml --locked`.
 
 use serde::{Deserialize, Serialize};
@@ -331,29 +331,6 @@ pub struct ClipType {
     pub reference: ::core::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "$value")]
     pub content: ::core::option::Option<ClipTypeContent>,
-}
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub enum ClipTypeContent {
-    #[serde(rename = "Timeline")]
-    Timeline(TimelineType),
-    #[serde(rename = "Lanes")]
-    Lanes(LanesType),
-    #[serde(rename = "Notes")]
-    Notes(NotesType),
-    #[serde(rename = "Clips")]
-    Clips(ClipsType),
-    #[serde(rename = "ClipSlot")]
-    ClipSlot(ClipSlotType),
-    #[serde(rename = "markers")]
-    Markers(MarkersType),
-    #[serde(rename = "Warps")]
-    Warps(WarpsType),
-    #[serde(rename = "Audio")]
-    Audio(AudioType),
-    #[serde(rename = "Video")]
-    Video(AudioType),
-    #[serde(rename = "Points")]
-    Points(PointsType),
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ClipSlotType {
@@ -712,30 +689,7 @@ pub struct LanesType {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "@track")]
     pub track: ::core::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "$value")]
-    pub content: ::std::vec::Vec<LanesTypeContent>,
-}
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub enum LanesTypeContent {
-    #[serde(rename = "Timeline")]
-    Timeline(TimelineType),
-    #[serde(rename = "Lanes")]
-    Lanes(LanesType),
-    #[serde(rename = "Notes")]
-    Notes(NotesType),
-    #[serde(rename = "Clips")]
-    Clips(ClipsType),
-    #[serde(rename = "ClipSlot")]
-    ClipSlot(ClipSlotType),
-    #[serde(rename = "markers")]
-    Markers(MarkersType),
-    #[serde(rename = "Warps")]
-    Warps(WarpsType),
-    #[serde(rename = "Audio")]
-    Audio(AudioType),
-    #[serde(rename = "Video")]
-    Video(AudioType),
-    #[serde(rename = "Points")]
-    Points(PointsType),
+    pub content: ::std::vec::Vec<ClipTypeContent>,
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct LimiterType {
@@ -993,30 +947,7 @@ pub struct NoteType {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "@rel")]
     pub rel: ::core::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "$value")]
-    pub content: ::core::option::Option<NoteTypeContent>,
-}
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub enum NoteTypeContent {
-    #[serde(rename = "Timeline")]
-    Timeline(TimelineType),
-    #[serde(rename = "Lanes")]
-    Lanes(LanesType),
-    #[serde(rename = "Notes")]
-    Notes(NotesType),
-    #[serde(rename = "Clips")]
-    Clips(ClipsType),
-    #[serde(rename = "ClipSlot")]
-    ClipSlot(ClipSlotType),
-    #[serde(rename = "markers")]
-    Markers(MarkersType),
-    #[serde(rename = "Warps")]
-    Warps(WarpsType),
-    #[serde(rename = "Audio")]
-    Audio(AudioType),
-    #[serde(rename = "Video")]
-    Video(AudioType),
-    #[serde(rename = "Points")]
-    Points(PointsType),
+    pub content: ::core::option::Option<ClipTypeContent>,
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct NotesType {
@@ -1322,30 +1253,7 @@ pub struct SceneType {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "@id")]
     pub id: ::core::option::Option<::std::string::String>,
     #[serde(rename = "$value")]
-    pub content: SceneTypeContent,
-}
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-pub enum SceneTypeContent {
-    #[serde(rename = "Timeline")]
-    Timeline(TimelineType),
-    #[serde(rename = "Lanes")]
-    Lanes(LanesType),
-    #[serde(rename = "Notes")]
-    Notes(NotesType),
-    #[serde(rename = "Clips")]
-    Clips(ClipsType),
-    #[serde(rename = "ClipSlot")]
-    ClipSlot(ClipSlotType),
-    #[serde(rename = "markers")]
-    Markers(MarkersType),
-    #[serde(rename = "Warps")]
-    Warps(WarpsType),
-    #[serde(rename = "Audio")]
-    Audio(AudioType),
-    #[serde(rename = "Video")]
-    Video(AudioType),
-    #[serde(rename = "Points")]
-    Points(PointsType),
+    pub content: ClipTypeContent,
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct SendType {
@@ -1615,6 +1523,29 @@ pub enum ChannelDevicesElementTypeContent {
 pub struct ChannelSendsElementType {
     #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "Send")]
     pub send: ::std::vec::Vec<SendType>,
+}
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub enum ClipTypeContent {
+    #[serde(rename = "Timeline")]
+    Timeline(TimelineType),
+    #[serde(rename = "Lanes")]
+    Lanes(::std::boxed::Box<LanesType>),
+    #[serde(rename = "Notes")]
+    Notes(::std::boxed::Box<NotesType>),
+    #[serde(rename = "Clips")]
+    Clips(::std::boxed::Box<ClipsType>),
+    #[serde(rename = "ClipSlot")]
+    ClipSlot(ClipSlotType),
+    #[serde(rename = "markers")]
+    Markers(MarkersType),
+    #[serde(rename = "Warps")]
+    Warps(WarpsType),
+    #[serde(rename = "Audio")]
+    Audio(AudioType),
+    #[serde(rename = "Video")]
+    Video(AudioType),
+    #[serde(rename = "Points")]
+    Points(PointsType),
 }
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct StringList(pub ::std::vec::Vec<xs::StringType>);

@@ -1,4 +1,4 @@
-// @generated from DAWproject ee4dcdde75940f30e14e55401a26955a58b8322b with xsd-parser bf1323fca2d7c95de4c79fbae65a3183ae0d158a.
+// @generated from DAWproject ee4dcdde75940f30e14e55401a26955a58b8322b with xsd-parser 96299a06eb207b420c3ce03b6d07c41421f555b0.
 // Do not edit manually; run `cargo run --manifest-path tools/codegen/Cargo.toml --locked`.
 
 use serde::{Deserialize, Serialize};

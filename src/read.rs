@@ -2,6 +2,7 @@ use crate::utils::consts::{
     METADATA_PATH, PROJECT_CONTENT_TYPE, PROJECT_FIXED_CONTENT_TYPE, PROJECT_PATH,
 };
 use crate::{Dawproject, DawprojectWithZip, MetaData, Project};
+use std::borrow::Cow;
 use std::fs::File;
 use std::io::{BufReader, Read, Seek};
 use std::path::Path;
@@ -37,8 +38,8 @@ where
         let zip = zip::ZipArchive::new(reader)?;
         let mut file_names = zip
             .file_names()
-            .map(|f| f.to_string())
-            .collect::<Vec<String>>();
+            .map(|name| name.map(Cow::into_owned))
+            .collect::<Result<Vec<String>, _>>()?;
         // sort the file names for consistent testing.
         file_names.sort();
 

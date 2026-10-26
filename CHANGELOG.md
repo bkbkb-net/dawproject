@@ -1,5 +1,64 @@
 # Changelog
 
+## [0.12.0](https://github.com/bkbkb-net/dawproject/compare/v0.11.0...v0.12.0) - 2026-10-26
+
+### Security
+
+- Bumped `zip` from 8.6.0 to 9.1.2, addressing `RUSTSEC-2026-0367`,
+  `RUSTSEC-2026-0368`, and `RUSTSEC-2026-0369`. `DawprojectReader::extract`
+  calls `ZipArchive::extract`, which in 8.x let a crafted archive create
+  symbolic links pointing outside the destination directory, apply Unix
+  permissions through such links, and keep SUID/SGID bits.
+
+### Breaking Changes
+
+- `zip` is part of the public API (`dawproject::zip`, `DawprojectWithZip::zip`,
+  `DawprojectReader::{into_inner, by_name}`, `DawprojectWriter::raw_copy_file`,
+  and the `ZipError` variants), so code that uses these needs `zip` 9 as well.
+  Among other changes, `ZipFile::name` and `ZipArchive::file_names` now return
+  `ZipResult<Cow<str>>`.
+- Updated `xsd-parser` from `bf1323fc` to `96299a06`. `clip`, `lanes`, `note`,
+  and `scene` share one content model, and the generator now emits a single
+  `ClipTypeContent` for all four instead of an identical enum per owner.
+  `LanesTypeContent`, `NoteTypeContent`, and `SceneTypeContent` remain as
+  aliases of it, so every published path still resolves and converting
+  between them is no longer needed. Its `Lanes`, `Notes`, and `Clips` variants
+  now hold a `Box`: construct them with `Box::new(..)`; code that only reads
+  through a binding usually compiles unchanged thanks to auto-deref.
+
+### Fixed
+
+- `ParameterError` is now re-exported from the crate root and the prelude. It is
+  the error type of `IntegerParameterType::set_value`,
+  `RealParameterType::{get_max, get_min, get_value, set_value}`, but it lived in
+  the private `models` module, so callers could not name it in their own
+  signatures. `#![warn(unnameable_types)]` now guards against a regression.
+
+### Added
+
+- The generated project types are re-exported at the crate root and in the
+  prelude, so `dawproject::ClipType` works in addition to the existing
+  `dawproject::project::ClipType`. Every previously published path is kept.
+- `metadata::MetaDataType` is exported under its generated name as well as the
+  `MetaData` alias, mirroring `project::{Project, ProjectType}`.
+- `tests/public_api.rs` pins the public paths so they cannot be dropped
+  accidentally.
+
+### Changed
+
+- Bumped `quick-xml` from 0.41.0 to 0.42.0. It stays internal to the crate.
+  The serializer now writes `\r`, `\n`, and `\t` in attribute values as
+  character references, so they survive a round trip, and the deserializer
+  rejects documents nested more than 128 levels deep. The bundled
+  `canon.dawproject` is written byte for byte as with 0.11.0.
+- Bumped `thiserror` to 2.0.21.
+- The code generator names a shared content type after its first owner
+  (`ClipTypeContent`) instead of keeping xsd-parser's counter-based name
+  (`ClipContent55Type`), which would change whenever the schema gains a type.
+- Updated the code generator's lockfile, and the pinned development and CI
+  toolchain from Rust 1.97.1 to 1.99.1. The minimum supported Rust version
+  stays 1.88.
+
 ## [0.11.0](https://github.com/bkbkb-net/dawproject/compare/0.10.3...0.11.0) - 2026-08-09
 
 ### Breaking Changes

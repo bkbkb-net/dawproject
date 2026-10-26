@@ -35,7 +35,7 @@ writer.write_dawproject(&dawproject).unwrap();
 ## Build from source
 
 The published crate supports Rust 1.88 and newer. This repository pins Rust
-1.97.1 so code generation and `rustfmt` output remain reproducible.
+1.99.1 so code generation and `rustfmt` output remain reproducible.
 
 ```bash
 cargo build
@@ -45,7 +45,7 @@ Normal builds use the generated Rust models committed under `src/generated/`.
 They do not run `xsd-parser` and do not require either submodule.
 
 The `xsd-parser` submodule is pinned to commit
-`bf1323fca2d7c95de4c79fbae65a3183ae0d158a` and is only needed when
+`96299a06eb207b420c3ce03b6d07c41421f555b0` and is only needed when
 refreshing the generated models. The source DAWproject schema is pinned to
 upstream `main` commit `ee4dcdde75940f30e14e55401a26955a58b8322b`:
 
